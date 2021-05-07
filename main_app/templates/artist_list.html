@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1 class="title">Trending Artists</h1>
+
+<div class="gallery">
+
+  {% for artist in artists %}
+
+    <a href="">
+      <div class="card">
+        <div class="card-image">
+          <figure class="image is-square">
+            <img src="{{artist.image}}" alt="{{artist.name}}">
+          </figure>
+        </div>
+        <div class="card-header">
+          <p class="card-header-title">
+            {{ artist.name }}
+          </p>
+        </div>
+      </div>
+    </a>
+
+  {% endfor %}
+
+</div>
+
+
+{% endblock %}
