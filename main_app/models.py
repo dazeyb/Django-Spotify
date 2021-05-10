@@ -7,7 +7,7 @@ from django.db.models import Model, CharField, TextField, BooleanField, DateTime
 class Artist(Model):
 
     name = CharField(max_length=100)
-    img = CharField(max_length=120)
+    img = CharField(max_length=500)
     bio = TextField(max_length=500)
     verified_artist = BooleanField(default=False)
     created_at = DateTimeField(auto_now_add=True)
