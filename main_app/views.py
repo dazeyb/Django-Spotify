@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.views import View
 from django.views.generic.base import TemplateView
+from django.views.generic import DetailView
 from django.views.generic.edit import CreateView
 from django.http import HttpResponse
 
@@ -39,3 +40,8 @@ class ArtistCreate(CreateView):
     fields = ['name', 'img', 'bio', 'verified_artist']
     template_name = "artist_create.html"
     success_url = "/artists/"
+
+
+class ArtistDetail(DetailView):
+    model = Artist
+    template_name = "artist_detail.html"
