@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.views import View
 from django.views.generic.base import TemplateView
+from django.views.generic.edit import CreateView
 from django.http import HttpResponse
 
 # import models
@@ -31,3 +32,10 @@ class ArtistList(TemplateView):
             context["artists"] = Artist.objects.all()
             context["header"] = "Trending Artists"
         return context
+
+
+class ArtistCreate(CreateView):
+    model = Artist
+    fields = ['name', 'img', 'bio', 'verified_artist']
+    template_name = "artist_create.html"
+    success_url = "/artists/"
