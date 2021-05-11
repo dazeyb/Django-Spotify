@@ -37,20 +37,54 @@
   <div class="detail__songs mb-5">
     <h3 class="title is-3">Songs</h3>
 
+    {% comment %} form to create songs {% endcomment %}
+
+    <form class="mb-5" action="{% url 'song_create' artist.pk %}" method="post">
+      {% csrf_token %}
+
+       <div class="field has-addons">
+
+        <div class="control">
+          <input 
+            type="text" 
+            class="input" 
+            name="title"
+            placeholder="Title"
+            required 
+          />
+        </div>
+        
+        <div class="control">
+          <input 
+            type="number" 
+            class="input" 
+            name="length"
+            placeholder="Length in Seconds"
+            min="1"
+            required
+          />
+        </div>
+        <div class="control">
+          <input class="button is-primary" type="submit" value="Add Song" />
+        </div>
+
+       </div>
+    
+    </form>
+
     {% for song in artist.songs.all %}
 
     <div class="song">
       <span>{{forloop.counter}}</span>
       <span><b>{{song.title}}</b></span>
-      <span>{{song.length}}</span>
+      <span>{{song.get_length}}</span>
     </div>
 
+    {% empty %}
+    <h3 class="title is-4">No Songs Available Yet</h3>
+
     {% endfor %}
-
-
   </div>
-
-
 
   <div class="detail__about">
     <h4 class="title is-4">About</h4>

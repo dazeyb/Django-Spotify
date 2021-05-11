@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views import View
 from django.views.generic.base import TemplateView
@@ -7,7 +7,7 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.http import HttpResponse
 
 # import models
-from .models import Artist
+from .models import Artist, Song
 
 # Create your views here.
 
@@ -63,3 +63,19 @@ class ArtistDelete(DeleteView):
     model = Artist
     template_name = "artist_delete_confirmation.html"
     success_url = "/artists/"
+
+
+class SongCreate(View):
+    # just to show you can do whatever request you wish
+    def get(self, request, pk):
+        # this is the same as template_name=home.html
+        return render(request, "home.html")
+
+    def post(self, request, pk):
+        title_data = request.POST.get("title")
+        length_data = request.POST.get("length")
+        # SELECT * FROM main_app_artist WHERE id=1;
+        artist_found = Artist.objects.get(pk=pk)
+        Song.objects.create(
+            title=title_data, length=length_data, artist=artist_found)
+        return redirect('artist_detail', pk=pk)

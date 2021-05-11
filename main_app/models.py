@@ -1,6 +1,6 @@
 from django.db import models
 from django.db.models import Model, CharField, TextField, BooleanField, DateTimeField
-
+import time
 # Create your models here.
 
 
@@ -32,3 +32,6 @@ class Song(Model):
 
     def __str__(self):
         return f"{self.title} BY: {self.artist.name}"
+
+    def get_length(self):
+        return time.strftime("%-M:%S", time.gmtime(self.length))
