@@ -31,4 +31,4 @@ class Song(Model):
         Artist, on_delete=models.CASCADE, related_name="songs")
 
     def __str__(self):
-        return self.title
+        return f"{self.title} BY: {self.artist.name}"

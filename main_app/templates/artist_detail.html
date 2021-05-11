@@ -1,4 +1,10 @@
-{% extends 'base.html' %} {% block content %}
+{% extends 'base.html' %} 
+
+{% block css %}
+  {% comment %} <link rel="stylesheet" href="style.css"> {% endcomment %}
+{% endblock %}
+
+{% block content %}
 <div class="detail__img">
   <img src="{{artist.img}}" alt="{{artist.name}}" />
 </div>
@@ -26,6 +32,26 @@
       </span>
     </a>
   </div>
+  {% comment %} Songs Section {% endcomment %}
+
+  <div class="detail__songs mb-5">
+    <h3 class="title is-3">Songs</h3>
+
+    {% for song in artist.songs.all %}
+
+    <div class="song">
+      <span>{{forloop.counter}}</span>
+      <span><b>{{song.title}}</b></span>
+      <span>{{song.length}}</span>
+    </div>
+
+    {% endfor %}
+
+
+  </div>
+
+
+
   <div class="detail__about">
     <h4 class="title is-4">About</h4>
     <p>{{artist.bio}}</p>
