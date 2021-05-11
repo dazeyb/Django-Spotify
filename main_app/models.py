@@ -17,3 +17,18 @@ class Artist(Model):
 
     class Meta:
         ordering = ['name']
+
+# artist.songs => all songs by the given artist
+# without related name
+# artist.song_set
+
+
+class Song(Model):
+
+    title = CharField(max_length=150)
+    length = models.IntegerField(default=0)
+    artist = models.ForeignKey(
+        Artist, on_delete=models.CASCADE, related_name="songs")
+
+    def __str__(self):
+        return self.title
