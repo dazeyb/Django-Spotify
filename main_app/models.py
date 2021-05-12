@@ -1,6 +1,7 @@
 from django.db import models
-from django.db.models import Model, CharField, TextField, BooleanField, DateTimeField
+from django.db.models import Model, CharField, TextField, BooleanField, DateTimeField, ManyToManyField
 import time
+from time import strftime
 # Create your models here.
 
 
@@ -35,3 +36,13 @@ class Song(Model):
 
     def get_length(self):
         return time.strftime("%-M:%S", time.gmtime(self.length))
+
+
+class Playlist(Model):
+
+    title = CharField(max_length=150)
+    # to create a many to many relationship aka a join table
+    songs = ManyToManyField(Song)
+
+    def __str__(self):
+        return self.title

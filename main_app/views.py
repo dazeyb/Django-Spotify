@@ -7,13 +7,18 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.http import HttpResponse
 
 # import models
-from .models import Artist, Song
+from .models import Artist, Song, Playlist
 
 # Create your views here.
 
 
 class Home(TemplateView):
     template_name = "home.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["playlists"] = Playlist.objects.all()
+        return context
 
 
 class About(TemplateView):
@@ -49,6 +54,11 @@ class ArtistDetail(DetailView):
     model = Artist
     template_name = "artist_detail.html"
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["playlists"] = Playlist.objects.all()
+        return context
+
 
 class ArtistUpdate(UpdateView):
     model = Artist
@@ -79,3 +89,14 @@ class SongCreate(View):
         Song.objects.create(
             title=title_data, length=length_data, artist=artist_found)
         return redirect('artist_detail', pk=pk)
+
+
+class PlaylistSongAssoc(View):
+
+    def get(self, request, pk, song_pk):
+        assoc = request.GET.get("assoc")
+        if assoc == "remove":
+            Playlist.objects.get(pk=pk).songs.remove(song_pk)
+        if assoc == "add":
+            Playlist.objects.get(pk=pk).songs.add(song_pk)
+        return redirect('home')
