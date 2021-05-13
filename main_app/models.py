@@ -1,5 +1,9 @@
 from django.db import models
 from django.db.models import Model, CharField, TextField, BooleanField, DateTimeField, ManyToManyField
+
+# import user model from built in auth
+from django.contrib.auth.models import User
+
 import time
 from time import strftime
 # Create your models here.
@@ -12,6 +16,8 @@ class Artist(Model):
     bio = TextField(max_length=500)
     verified_artist = BooleanField(default=False)
     created_at = DateTimeField(auto_now_add=True)
+    # connection to user
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name
