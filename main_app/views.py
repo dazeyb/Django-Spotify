@@ -6,6 +6,12 @@ from django.views.generic import DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.http import HttpResponse
 
+# auth imports
+from django.contrib.auth import login
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
+
 # import models
 from .models import Artist, Song, Playlist
 
@@ -25,6 +31,7 @@ class About(TemplateView):
     template_name = "about.html"
 
 
+@method_decorator(login_required, name='dispatch')
 class ArtistList(TemplateView):
     template_name = "artist_list.html"
 
@@ -33,18 +40,23 @@ class ArtistList(TemplateView):
         name_query = self.request.GET.get("name")
         if name_query != None:
             context["artists"] = Artist.objects.filter(
-                name__icontains=name_query)
+                name__icontains=name_query, user=self.request.user)
             context["header"] = f"Searching for {name_query}"
         else:
-            context["artists"] = Artist.objects.all()
+            context["artists"] = Artist.objects.filter(user=self.request.user)
             context["header"] = "Trending Artists"
         return context
 
 
+@method_decorator(login_required, name='dispatch')
 class ArtistCreate(CreateView):
     model = Artist
     fields = ['name', 'img', 'bio', 'verified_artist']
     template_name = "artist_create.html"
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super(ArtistCreate, self).form_valid(form)
 
     def get_success_url(self):
         return reverse('artist_detail', kwargs={'pk': self.object.pk})
@@ -60,6 +72,7 @@ class ArtistDetail(DetailView):
         return context
 
 
+@method_decorator(login_required, name='dispatch')
 class ArtistUpdate(UpdateView):
     model = Artist
     fields = ['name', 'img', 'bio', 'verified_artist']
@@ -69,6 +82,7 @@ class ArtistUpdate(UpdateView):
         return reverse('artist_detail', kwargs={'pk': self.object.pk})
 
 
+@method_decorator(login_required, name='dispatch')
 class ArtistDelete(DeleteView):
     model = Artist
     template_name = "artist_delete_confirmation.html"
@@ -100,3 +114,20 @@ class PlaylistSongAssoc(View):
         if assoc == "add":
             Playlist.objects.get(pk=pk).songs.add(song_pk)
         return redirect('home')
+
+
+class Signup(View):
+
+    def get(self, request):
+        form = UserCreationForm()
+        context = {"form": form}
+        return render(request, "registration/signup.html", context)
+
+    def post(self, request):
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            return redirect("artist_list")
+        else:
+            return redirect("signup")
